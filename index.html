@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="index.js" async></script>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      svg {
+        shape-rendering: geometricPrecision;
+        text-rendering: geometricPrecision;
+        image-rendering: optimizeQuality;
+        fill-rule: evenodd;
+        clip-rule: evenodd;
+        display: block;
+      }
+      g {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      #canvas {
+        opacity: 1;
+      }
+      circle {
+        fill: #fff;
+        stroke: #000;
+        stroke-width: 0.5;
+      }
+      line {
+        stroke: #999;
+        stroke-width: 1;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      text {
+        font-size: 13px;
+      }
+      #header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      h1 {
+        margin-right: 12px;
+        margin-top: 14px;
+      }
+      p {
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <h1>DAG Diagram</h1>
+    </div>
+    <svg id="workflowSVG">
+      <g id="canvas" />
+    </svg>
+  </body>
+</html>

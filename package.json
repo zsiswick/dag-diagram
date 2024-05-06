@@ -1,0 +1,13 @@
+{
+  "name": "bighat",
+  "version": "1.0.0",
+  "author": "zsiswick",
+  "license": "ISC",
+  "description": "DAG diagram assignment",
+  "scripts": {
+    "build": "esbuild index.ts --bundle --outfile=index.js"
+  },
+  "devDependencies": {
+    "esbuild": "0.20.2"
+  }
+}
