@@ -1,5 +1,8 @@
 (() => {
   // utils.ts
+  var vertexFadeTime = 500;
+  var vertexRadius = 20;
+  var svgNamespace = "http://www.w3.org/2000/svg";
   var setAttributes = (el, attrs) => {
     for (var key in attrs) {
       el.setAttribute(key, attrs[key]);
@@ -13,32 +16,25 @@
       }, time);
     });
   };
-
-  // app.ts
-  var vertexFadeTime = 500;
-  var vertexRadius = 20;
   var drawVertex = async (vertex) => {
     const canvas = document.getElementById("canvas");
     if (canvas) {
-      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      const circle = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "circle"
-      );
-      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      const textContent = document.createTextNode(vertex.id);
+      const group = document.createElementNS(svgNamespace, "g");
       group.setAttribute("id", vertex.id);
+      const circle = document.createElementNS(svgNamespace, "circle");
       setAttributes(circle, {
         cx: `${vertex.x}`,
         cy: `${vertex.y}`,
         r: `${vertexRadius}`
       });
+      const text = document.createElementNS(svgNamespace, "text");
       setAttributes(text, {
         x: `${vertex.x}`,
         y: `${vertex.y}`,
         "text-anchor": "middle",
         dy: ".3em"
       });
+      const textContent = document.createTextNode(vertex.id);
       text.appendChild(textContent);
       group.appendChild(circle);
       group.appendChild(text);
@@ -46,26 +42,23 @@
       await fadeInElement(vertexFadeTime, group);
     }
   };
-  var drawEdge = async (vertex, edge) => {
+  var drawEdge = async (vertex, edge, workflow2) => {
     const group = document.getElementById(vertex.id);
-    if (group) {
-      const targetVertex = workflow.vertices.find((v) => v.id === edge.target);
-      if (targetVertex) {
-        const line = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "line"
-        );
-        setAttributes(line, {
-          x1: `${vertex.x}`,
-          y1: `${vertex.y}`,
-          x2: `${targetVertex.x}`,
-          y2: `${targetVertex.y}`
-        });
-        group.prepend(line);
-        await fadeInElement(10, line);
-      }
+    const targetVertex = workflow2.vertices.find((v) => v.id === edge.target);
+    if (group && targetVertex) {
+      const line = document.createElementNS(svgNamespace, "line");
+      setAttributes(line, {
+        x1: `${vertex.x}`,
+        y1: `${vertex.y}`,
+        x2: `${targetVertex.x}`,
+        y2: `${targetVertex.y}`
+      });
+      group.prepend(line);
+      await fadeInElement(10, line);
     }
   };
+
+  // app.ts
   var runWorkflow = async (workflow2) => {
     const visited = /* @__PURE__ */ new Set();
     const traverse = async (vertex) => {
@@ -75,7 +68,7 @@
         const edgePromises = vertex.edges.map(
           async (edge) => {
             await new Promise((resolve) => setTimeout(resolve, edge.time * 1e3));
-            await drawEdge(vertex, edge);
+            await drawEdge(vertex, edge, workflow2);
             await traverse(workflow2.vertices.find((v) => v.id === edge.target));
           }
         );
@@ -120,4 +113,5 @@
       headerSection.appendChild(text);
     }
   });
+  var app_default = runWorkflow;
 })();

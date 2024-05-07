@@ -1,7 +1,7 @@
 {
   "name": "bighat",
   "version": "1.0.0",
-  "author": "zsiswick",
+  "author": "Zachary Siswick",
   "license": "ISC",
   "description": "DAG diagram assignment",
   "scripts": {

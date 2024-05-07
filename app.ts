@@ -1,78 +1,6 @@
-import { setAttributes, fadeInElement } from "./utils";
+import { Vertex, Workflow, drawVertex, drawEdge } from "./utils";
 
-interface Vertex {
-  readonly id: string;
-  readonly start?: boolean;
-  readonly edges: { target: string; time: number }[];
-  readonly x: number;
-  readonly y: number;
-}
-
-const vertexFadeTime = 500;
-const vertexRadius = 20;
-
-const drawVertex = async (vertex: Vertex): Promise<void> => {
-  const canvas = document.getElementById("canvas");
-  if (canvas) {
-    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    const circle = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "circle"
-    );
-    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    const textContent = document.createTextNode(vertex.id);
-    group.setAttribute("id", vertex.id);
-    setAttributes(circle, {
-      cx: `${vertex.x}`,
-      cy: `${vertex.y}`,
-      r: `${vertexRadius}`,
-    });
-    setAttributes(text, {
-      x: `${vertex.x}`,
-      y: `${vertex.y}`,
-      "text-anchor": "middle",
-      dy: ".3em",
-    });
-    text.appendChild(textContent);
-    group.appendChild(circle);
-    group.appendChild(text);
-    canvas.appendChild(group);
-
-    // Fade in vertex
-    await fadeInElement(vertexFadeTime, group);
-  }
-};
-
-const drawEdge = async (
-  vertex: Vertex,
-  edge: {
-    target: string;
-    time: number;
-  }
-): Promise<void> => {
-  const group = document.getElementById(vertex.id);
-  if (group) {
-    const targetVertex = workflow.vertices.find((v) => v.id === edge.target);
-    if (targetVertex) {
-      const line = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-      setAttributes(line, {
-        x1: `${vertex.x}`,
-        y1: `${vertex.y}`,
-        x2: `${targetVertex.x}`,
-        y2: `${targetVertex.y}`,
-      });
-      group.prepend(line);
-
-      // Fade in after vertex fade animation is complete
-      await fadeInElement(10, line);
-    }
-  }
-};
-
-export const runWorkflow = async (workflow: { vertices: Vertex[] }) => {
+const runWorkflow = async (workflow: Workflow) => {
   const visited = new Set();
 
   const traverse = async (vertex: Vertex | undefined) => {
@@ -83,7 +11,7 @@ export const runWorkflow = async (workflow: { vertices: Vertex[] }) => {
       const edgePromises = vertex.edges.map(
         async (edge: { target: string; time: number }) => {
           await new Promise((resolve) => setTimeout(resolve, edge.time * 1000));
-          await drawEdge(vertex, edge);
+          await drawEdge(vertex, edge, workflow);
           await traverse(workflow.vertices.find((v) => v.id === edge.target));
         }
       );
@@ -127,7 +55,7 @@ const workflow = {
   ],
 };
 runWorkflow(workflow).then(() => {
-  // Notify when diagram is done
+  // Notify in the document when diagram is done animating
   const headerSection = document.getElementById("header");
   if (headerSection) {
     const text = document.createElement("p");
@@ -136,3 +64,5 @@ runWorkflow(workflow).then(() => {
     headerSection.appendChild(text);
   }
 });
+
+export default runWorkflow;

@@ -1,7 +1,6 @@
 # DAG Diagram
 
-To see the DAG diagram example, no setup is required. Open the `index.html` file in a Chrome browser and you should see a
-DAG diagram animate onto the viewport. Refresh to start the animation over.
+To see the DAG diagram example, no setup is required. Open the `index.html` file in a Chrome browser and you should see diagram animate in the viewport. Refresh to start the animation over.
 
 ## Setup
 
