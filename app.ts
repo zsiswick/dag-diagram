@@ -126,7 +126,6 @@ const workflow = {
     { id: "D", edges: [], x: 100, y: 150 },
   ],
 };
-
 runWorkflow(workflow).then(() => {
   // Notify when diagram is done
   const headerSection = document.getElementById("header");
