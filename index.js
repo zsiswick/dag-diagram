@@ -42,9 +42,9 @@
       await fadeInElement(vertexFadeTime, group);
     }
   };
-  var drawEdge = async (vertex, edge, workflow2) => {
+  var drawEdge = async (vertex, edge, workflow) => {
     const group = document.getElementById(vertex.id);
-    const targetVertex = workflow2.vertices.find((v) => v.id === edge.target);
+    const targetVertex = workflow.vertices.find((v) => v.id === edge.target);
     if (group && targetVertex) {
       const line = document.createElementNS(svgNamespace, "line");
       setAttributes(line, {
@@ -57,37 +57,25 @@
       await fadeInElement(10, line);
     }
   };
-
-  // app.ts
-  var runWorkflow = async (workflow2) => {
-    const visited = /* @__PURE__ */ new Set();
-    const traverse = async (vertex) => {
-      if (vertex && !visited.has(vertex.id)) {
-        visited.add(vertex.id);
-        await drawVertex(vertex);
-        const edgePromises = vertex.edges.map(
-          async (edge) => {
-            await new Promise((resolve) => setTimeout(resolve, edge.time * 1e3));
-            await drawEdge(vertex, edge, workflow2);
-            await traverse(workflow2.vertices.find((v) => v.id === edge.target));
-          }
-        );
-        await Promise.all(edgePromises);
-      }
-    };
-    const startVertex = workflow2.vertices.find((v) => v.start);
-    if (!startVertex) {
-      console.error("No start vertex specified.");
-      return;
+  var drawDoneMessage = () => {
+    const headerSection = document.getElementById("header");
+    if (headerSection) {
+      const text = document.createElement("p");
+      const textContent = document.createTextNode("Done");
+      text.appendChild(textContent);
+      headerSection.appendChild(text);
     }
-    await traverse(startVertex);
   };
-  var svg = document.getElementById("workflowSVG");
-  if (svg) {
-    svg.setAttribute("width", `${window.innerWidth - 100}`);
-    svg.setAttribute("height", `${window.innerHeight - 100}`);
-  }
-  var workflow = {
+  var scaleSvg = () => {
+    const svg = document.getElementById("workflowSVG");
+    if (svg) {
+      svg.setAttribute("width", `${window.innerWidth - 100}`);
+      svg.setAttribute("height", `${window.innerHeight - 100}`);
+    }
+  };
+
+  // workflows.ts
+  var dagWorkflow = {
     vertices: [
       {
         id: "A",
@@ -104,14 +92,34 @@
       { id: "D", edges: [], x: 100, y: 150 }
     ]
   };
-  runWorkflow(workflow).then(() => {
-    const headerSection = document.getElementById("header");
-    if (headerSection) {
-      const text = document.createElement("p");
-      const textContent = document.createTextNode("Done");
-      text.appendChild(textContent);
-      headerSection.appendChild(text);
+
+  // app.ts
+  var runWorkflow = async (workflow) => {
+    const visited = /* @__PURE__ */ new Set();
+    const traverse = async (vertex) => {
+      if (vertex && !visited.has(vertex.id)) {
+        visited.add(vertex.id);
+        await drawVertex(vertex);
+        const edgePromises = vertex.edges.map(
+          async (edge) => {
+            await new Promise((resolve) => setTimeout(resolve, edge.time * 1e3));
+            await drawEdge(vertex, edge, workflow);
+            await traverse(workflow.vertices.find((v) => v.id === edge.target));
+          }
+        );
+        await Promise.all(edgePromises);
+      }
+    };
+    const startVertex = workflow.vertices.find((v) => v.start);
+    if (!startVertex) {
+      console.error("No start vertex specified.");
+      return;
     }
+    await traverse(startVertex);
+  };
+  scaleSvg();
+  runWorkflow(dagWorkflow).then(() => {
+    drawDoneMessage();
   });
   var app_default = runWorkflow;
 })();

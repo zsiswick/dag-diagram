@@ -1,4 +1,12 @@
-import { Vertex, Workflow, drawVertex, drawEdge } from "./utils";
+import {
+  Vertex,
+  Workflow,
+  drawVertex,
+  drawEdge,
+  drawDoneMessage,
+  scaleSvg,
+} from "./utils";
+import { dagWorkflow } from "./workflows";
 
 const runWorkflow = async (workflow: Workflow) => {
   const visited = new Set();
@@ -29,40 +37,10 @@ const runWorkflow = async (workflow: Workflow) => {
   await traverse(startVertex);
 };
 
-// Scale the svg to size of window
-const svg = document.getElementById("workflowSVG");
-if (svg) {
-  svg.setAttribute("width", `${window.innerWidth - 100}`);
-  svg.setAttribute("height", `${window.innerHeight - 100}`);
-}
+scaleSvg(); // Scale the svg to size of window
 
-// Example DAG workflow
-const workflow = {
-  vertices: [
-    {
-      id: "A",
-      start: true,
-      edges: [
-        { target: "B", time: 3 },
-        { target: "C", time: 5 },
-      ],
-      x: 100,
-      y: 50,
-    },
-    { id: "B", edges: [{ target: "D", time: 3 }], x: 100, y: 100 },
-    { id: "C", edges: [{ target: "D", time: 2 }], x: 150, y: 100 },
-    { id: "D", edges: [], x: 100, y: 150 },
-  ],
-};
-runWorkflow(workflow).then(() => {
-  // Notify in the document when diagram is done animating
-  const headerSection = document.getElementById("header");
-  if (headerSection) {
-    const text = document.createElement("p");
-    const textContent = document.createTextNode("Done");
-    text.appendChild(textContent);
-    headerSection.appendChild(text);
-  }
+runWorkflow(dagWorkflow).then(() => {
+  drawDoneMessage();
 });
 
 export default runWorkflow;

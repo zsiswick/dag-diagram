@@ -89,3 +89,21 @@ export const drawEdge = async (
     await fadeInElement(10, line);
   }
 };
+
+export const drawDoneMessage = () => {
+  const headerSection = document.getElementById("header");
+  if (headerSection) {
+    const text = document.createElement("p");
+    const textContent = document.createTextNode("Done");
+    text.appendChild(textContent);
+    headerSection.appendChild(text);
+  }
+};
+
+export const scaleSvg = () => {
+  const svg = document.getElementById("workflowSVG");
+  if (svg) {
+    svg.setAttribute("width", `${window.innerWidth - 100}`);
+    svg.setAttribute("height", `${window.innerHeight - 100}`);
+  }
+};
