@@ -69,6 +69,7 @@ describe("DAG Diagram Suite", () => {
       };
       await runWorkflow(workflow);
 
+      // Inspect DOM output
       const vertexes = document.querySelectorAll("circle");
       expect(vertexes).toHaveLength(4);
 

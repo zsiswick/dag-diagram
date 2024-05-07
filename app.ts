@@ -12,11 +12,11 @@ const runWorkflow = async (workflow: Workflow) => {
         async (edge: { target: string; time: number }) => {
           await new Promise((resolve) => setTimeout(resolve, edge.time * 1000));
           await drawEdge(vertex, edge, workflow);
-          await traverse(workflow.vertices.find((v) => v.id === edge.target));
+          await traverse(workflow.vertices.find((v) => v.id === edge.target)); // Walk the graph
         }
       );
 
-      await Promise.all(edgePromises);
+      await Promise.all(edgePromises); // Wait for edge timers to complete
     }
   };
 
