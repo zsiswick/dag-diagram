@@ -1,4 +1,4 @@
-import { setAttributes } from "./utils";
+import { setAttributes, fadeInElement } from "./utils";
 
 interface Vertex {
   readonly id: string;
@@ -10,15 +10,6 @@ interface Vertex {
 
 const vertexFadeTime = 500;
 const vertexRadius = 20;
-
-const fadeInElement = (time: number, el: unknown): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      (el as HTMLElement).style.opacity = "1";
-      resolve();
-    }, time);
-  });
-};
 
 const drawVertex = async (vertex: Vertex): Promise<void> => {
   const canvas = document.getElementById("canvas");
@@ -81,14 +72,12 @@ const drawEdge = async (
   }
 };
 
-const runWorkflow = async (workflow: { vertices: Vertex[] }) => {
+export const runWorkflow = async (workflow: { vertices: Vertex[] }) => {
   const visited = new Set();
 
   const traverse = async (vertex: Vertex | undefined) => {
     if (vertex && !visited.has(vertex.id)) {
       visited.add(vertex.id);
-      console.log(`Visiting vertex: ${vertex.id}`);
-
       await drawVertex(vertex);
 
       const edgePromises = vertex.edges.map(

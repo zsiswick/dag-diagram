@@ -5,10 +5,6 @@
       el.setAttribute(key, attrs[key]);
     }
   };
-
-  // index.ts
-  var vertexFadeTime = 500;
-  var vertexRadius = 20;
   var fadeInElement = (time, el) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -17,6 +13,10 @@
       }, time);
     });
   };
+
+  // app.ts
+  var vertexFadeTime = 500;
+  var vertexRadius = 20;
   var drawVertex = async (vertex) => {
     const canvas = document.getElementById("canvas");
     if (canvas) {
@@ -71,7 +71,6 @@
     const traverse = async (vertex) => {
       if (vertex && !visited.has(vertex.id)) {
         visited.add(vertex.id);
-        console.log(`Visiting vertex: ${vertex.id}`);
         await drawVertex(vertex);
         const edgePromises = vertex.edges.map(
           async (edge) => {
