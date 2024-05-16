@@ -41,6 +41,7 @@ export const drawVertex = async (vertex: Vertex): Promise<void> => {
 
     const circle = document.createElementNS(svgNamespace, "circle");
     setAttributes(circle, {
+      id: vertex.id,
       cx: `${vertex.x}`,
       cy: `${vertex.y}`,
       r: `${vertexRadius}`,

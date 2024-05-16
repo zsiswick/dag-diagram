@@ -1,5 +1,5 @@
+import { runWorkflow } from "./runner";
 import * as utils from "./utils";
-import runWorkflow from "./app";
 
 describe("DAG Diagram Suite", () => {
   describe("utils", () => {
